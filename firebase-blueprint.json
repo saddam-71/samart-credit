@@ -1,0 +1,43 @@
+{
+  "entities": {
+    "Customer": {
+      "title": "Customer",
+      "description": "Customer credit profile synchronized for cloud persistence",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "merchantId": { "type": "string" },
+        "fullName": { "type": "string" },
+        "mobileNumber": { "type": "string" },
+        "fullAddress": { "type": "string" },
+        "currentBalancePaise": { "type": "number" },
+        "totalCreditPaise": { "type": "number" },
+        "totalRepaymentPaise": { "type": "number" },
+        "autoPayMandateStatus": { "type": "string" },
+        "autoPayMandateId": { "type": "string" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["id", "merchantId", "fullName", "mobileNumber", "currentBalancePaise"]
+    },
+    "LedgerTransaction": {
+      "title": "LedgerTransaction",
+      "description": "Append-only ledger entries synchronized to cloud",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "merchantId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "transactionType": { "type": "string" },
+        "amountPaise": { "type": "number" },
+        "balanceAfterPaise": { "type": "number" },
+        "description": { "type": "string" },
+        "paymentSource": { "type": "string" },
+        "timestamp": { "type": "number" }
+      },
+      "required": ["id", "merchantId", "customerId", "transactionType", "amountPaise", "timestamp"]
+    }
+  },
+  "firestore": {
+    "rules": "rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /merchants/{merchantId}/customers/{customerId} {\n      allow read, write: if request.auth != null;\n    }\n    match /merchants/{merchantId}/transactions/{transactionId} {\n      allow read, write: if request.auth != null;\n    }\n  }\n}"
+  }
+}
